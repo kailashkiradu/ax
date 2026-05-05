@@ -1,19 +1,27 @@
 package com.acquirerx.merchant.common.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String message = "Invalid value '" + ex.getValue() + "' for parameter '" + ex.getName() + "'";
+        return errorResponse(HttpStatus.BAD_REQUEST, message);
+    }
     private ResponseEntity<Map<String, Object>> errorResponse(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(Map.of(
                 "error", message,
@@ -57,6 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAll(Exception ex) {
+        log.error("Unhandled exception: {}", ex.getMessage(), ex);
         return errorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
     }
 }

@@ -46,4 +46,10 @@ public class Store {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
+
+    private String city;
+    private String state;
+    private String pincode;
+    private String contactPerson;
+    private String contactPhone;
 }

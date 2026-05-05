@@ -73,7 +73,7 @@ function StoreDetail() {
       await storeApi.updateStatus(id, newStatus);
       fetchStore();
     } catch (err) {
-      setStatusError(err?.response?.data?.message || 'Failed to update status');
+      setStatusError(err?.response?.data?.error || 'Failed to update status');
     } finally {
       setStatusChanging(false);
     }
